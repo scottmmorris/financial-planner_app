@@ -1,0 +1,19 @@
+{
+  "name": "financial-planner",
+  "version": "1.0.0",
+  "description": "A minimal application to help kepp financial transcactions",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "Electron",
+    "financial",
+    "planner"
+  ],
+  "author": "Scott Morris",
+  "devDependencies": {
+    "electron": "^17.0.0"
+  }
+}
