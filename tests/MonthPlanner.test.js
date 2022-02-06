@@ -14,30 +14,37 @@ describe('MonthPlanner Testing', () => {
     });
 
     afterEach(async () => {
-        await fs.promises.rmdir(dataDir, { recursive: true, force: true });
+        await fs.promises.rm(dataDir, { recursive: true, force: true });
     });
 
-    test('adding and getting an entry', () => {
-        const january = await createMonthPlanner(dataDir, 'January');
+    test('adding and getting an entry', async () => {
+        const january = await MonthPlanner.createMonthPlanner(dataDir, 'January');
         expect(january.getEntry('Chips')).toBeUndefined();
-        january.addEntry('Chips', 1.00, 'Food');
+        await january.addEntry('Chips', 1.00, 'Food');
         const chips = january.getEntry('Chips');
         expect(chips.name).toBe('Chips');
         expect(chips.value).toBe(1.00);
         expect(chips.category).toBe('Food');
     });
 
-    test('deleting an entry', () => {
-        const january = await createMonthPlanner(dataDir, 'January');
-        january.addEntry('Chips', 1.00, 'Food');
-        january.deleteEntry('Chips');
+    test('deleting an entry', async () => {
+        const january = await MonthPlanner.createMonthPlanner(dataDir, 'January');
+        await january.addEntry('Chips', 1.00, 'Food');
+        await january.deleteEntry('Chips');
         expect(january.getEntry('Chips')).toBeUndefined();
     });
 
+    test('can have multiple entries', async () => {
+        const january = await MonthPlanner.createMonthPlanner(dataDir, 'January');
+        await january.addEntry('Chips', 2.00, 'Food');
+        await january.addEntry('Coke', 1.00, 'Food');
+        let list = january.listEntries();
+        for (const elem in list) {
+            expect(list[elem].name == 'Coke' || list[elem].name == 'Chips').toBeTruthy();
+        };
+    });
+
     test('can load from existing state', async () => {
-        const january = new MonthPlanner(dataDir, 'January');
-        let chips = january.getEntry('Chips');
-        expect(chips).toBeUndefined();
         const fields = {
             'abc': {
                 'name': 'Chips',
@@ -47,18 +54,36 @@ describe('MonthPlanner Testing', () => {
         }
         await fs.promises.mkdir(path.join(dataDir, 'January'));
         await fs.promises.writeFile(path.join(dataDir, 'January', 'meta'), JSON.stringify(fields));
-        await january.loadFromDatabase();
-        chips = january.getEntry('Chips');
+        const january = await MonthPlanner.createMonthPlanner(dataDir, 'January');
+        const chips = january.getEntry('Chips');
         expect(chips.name).toBe('Chips');
         expect(chips.value).toBe(2.00);
         expect(chips.category).toBe('Food');
     });
 
     test('can manipulate state', async () => {
-        const january = new MonthPlanner(dataDir, 'January');
-        chips = january.getEntry('Chips');
+        const january = await MonthPlanner.createMonthPlanner(dataDir, 'January');
+        await january.addEntry('Chips', 1.00, 'Food');
+        const januaryReloaded = await MonthPlanner.createMonthPlanner(dataDir, 'January')
+        let chips = januaryReloaded.getEntry('Chips');
         expect(chips.name).toBe('Chips');
-        expect(chips.value).toBe(2.00);
+        expect(chips.value).toBe(1.00);
+        expect(chips.category).toBe('Food');
+        await januaryReloaded.deleteEntry('Chips');
+        const januaryReloadedReloaded = await MonthPlanner.createMonthPlanner(dataDir, 'January');
+        chips = januaryReloadedReloaded.getEntry('Chips');
+        expect(chips).toBeUndefined();
+    });
+
+    test('can load an empty planner state', async () => {
+        const january = await MonthPlanner.createMonthPlanner(dataDir, 'January');
+        const januaryReloaded = await MonthPlanner.createMonthPlanner(dataDir, 'January')
+        let chips = januaryReloaded.getEntry('Chips');
+        expect(chips).toBeUndefined();
+        await januaryReloaded.addEntry('Chips', 1.00, 'Food');
+        chips = januaryReloaded.getEntry('Chips');
+        expect(chips.name).toBe('Chips');
+        expect(chips.value).toBe(1.00);
         expect(chips.category).toBe('Food');
     });
 });

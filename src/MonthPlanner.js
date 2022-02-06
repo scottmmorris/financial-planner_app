@@ -5,25 +5,32 @@ import * as utils from './utils';
 class MonthPlanner {
     static async createMonthPlanner(basePath, identity) {
         const identityPath = path.join(basePath, identity);
+        const metaPath = path.join(identityPath, 'meta');
+        let fields = {};
         if(await utils.mkdirExists(identityPath)) {
-            if(await fs.promises.access(path.join(identityPath, 'meta')));
-            const fieldMetadata = await fs.promises.readFile(this.metaPath, { encoding: 'utf-8' });
-            this.fields = JSON.parse(fieldMetadata);
+            try {
+                const fieldMetadata = await fs.promises.readFile(metaPath, { encoding: 'utf-8' });
+                fields = JSON.parse(fieldMetadata);
+            } catch (e) {
+                if (e.code != 'ENOENT') throw e;
+            }
         }
-        return new MonthPlanner(identityPath, identity)
+        return new MonthPlanner(identityPath, metaPath, identity, fields)
     }
     constructor(
         identityPath,
+        metaPath,
         identity,
+        fields,
     ) {
         this.identityPath = identityPath
-        this.metaPath = path.join(this.identityPath, 'meta');
+        this.metaPath = metaPath;
         this.identity = identity;
-        this.fields = {};
+        this.fields = fields;
     }
 
     async addEntry(name, value, category) {
-        const id = this.generateRandomId();
+        const id = this.#generateRandomId();
         this.fields[id] = {
             'name': name,
             'value': value,
@@ -34,12 +41,16 @@ class MonthPlanner {
     }
 
     getEntry(name) {
-        const id = this.getId(name);
+        const id = this.#getId(name);
         return this.fields[id];
     }
 
+    listEntries() {
+        return this.fields;
+    }
+
     async deleteEntry(name) {
-        const id = this.getId(name);
+        const id = this.#getId(name);
         delete this.fields[id];
         await this.#writeMetadata();
     }

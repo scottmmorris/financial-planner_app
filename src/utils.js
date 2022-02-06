@@ -4,9 +4,10 @@ async function mkdirExists(path) {
     try {
         await fs.promises.mkdir(path);
     } catch (e) {
-        if (e.code == 'ENOENT') return false;
+        if (e.code == 'EEXIST') return true;
+        throw e;
     }
-    return true;
+    return false;
 }
 
 export {
