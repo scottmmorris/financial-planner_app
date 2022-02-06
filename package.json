@@ -4,8 +4,10 @@
   "description": "A minimal application to help kepp financial transcactions",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
+  "type": "module",
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
     "Electron",
@@ -14,6 +16,7 @@
   ],
   "author": "Scott Morris",
   "devDependencies": {
-    "electron": "^17.0.0"
+    "electron": "^17.0.0",
+    "jest": "^27.5.0"
   }
 }
