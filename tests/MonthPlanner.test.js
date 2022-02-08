@@ -76,7 +76,7 @@ describe('MonthPlanner Testing', () => {
     });
 
     test('can load an empty planner state', async () => {
-        const january = await MonthPlanner.createMonthPlanner(dataDir, 'January');
+        await fs.promises.mkdir(path.join(dataDir, 'January'));
         const januaryReloaded = await MonthPlanner.createMonthPlanner(dataDir, 'January')
         let chips = januaryReloaded.getEntry('Chips');
         expect(chips).toBeUndefined();
