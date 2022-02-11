@@ -1,9 +1,9 @@
-import fs from 'fs';
-import os from 'os';
+const fs = require('fs');
+const os = require('os');
 
-async function mkdirExists(path) {
+function mkdirExists(path) {
     try {
-        await fs.promises.mkdir(path);
+        fs.mkdirSync(path);
     } catch (e) {
         if (e.code == 'EEXIST') return true;
         throw e;
@@ -40,7 +40,7 @@ function getDefaultAppPath() {
     return p;
   }
 
-export {
+module.exports = {
     mkdirExists,
     getDefaultAppPath,
 }

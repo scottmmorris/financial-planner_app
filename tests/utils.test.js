@@ -21,6 +21,6 @@ describe('utils testing', () => {
         const filePath = path.join(dataDir, 'false');
         const exists = await utils.mkdirExists(filePath);
         expect(exists).toBeFalsy();
-        await expect(fs.promises.open(filePath)).resolves.toBeTruthy();
+        await expect(fs.promises.access(filePath)).resolves.toBeUndefined();
     });
 });

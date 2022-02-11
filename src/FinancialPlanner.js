@@ -1,16 +1,16 @@
-import fs from 'fs';
-import path from 'path';
-import * as utils from './utils';
+const fs = require('fs');
+const path = require('path');
 
-import MonthPlanner from './MonthPlanner';
+const utils = require('./utils');
+const MonthPlanner = require('./MonthPlanner');
 
 class FinancialPlanner {
-    static async startFinancialPlanner(statePath) {
+    static startFinancialPlanner(statePath) {
         if (statePath == undefined) statePath = utils.getDefaultAppPath();
         let monthPlanners = new Map;
-        if (await utils.mkdirExists(statePath)) {
-            for (const file of await fs.promises.readdir(statePath)) {
-                monthPlanners.set(file, await MonthPlanner.createMonthPlanner(statePath, file));
+        if (utils.mkdirExists(statePath)) {
+            for (const file of fs.readdirSync(statePath)) {
+                monthPlanners.set(file, MonthPlanner.createMonthPlanner(statePath, file));
             }
         }
         return new FinancialPlanner(statePath, monthPlanners);
@@ -21,19 +21,19 @@ class FinancialPlanner {
         this.statePath = statePath;
     }
 
-    async createNewMonthPlanner(name) {
+    createNewMonthPlanner(name) {
         if (this.monthPlanners.has(name)) {
             console.log('Name already exists')
             return false;
         }
-        this.monthPlanners.set(name, await MonthPlanner.createMonthPlanner(this.statePath, name));
+        this.monthPlanners.set(name, MonthPlanner.createMonthPlanner(this.statePath, name));
         return true;
     }
 
-    async deleteMonthPlanner(name) {
-        await fs.promises.rm(path.join(this.statePath, name), { recursive: true, force: true });
+    deleteMonthPlanner(name) {
+        fs.rmSync(path.join(this.statePath, name), { recursive: true, force: true });
         this.monthPlanners.delete(name);
     }
 }
 
-export default FinancialPlanner;
+module.exports = FinancialPlanner;

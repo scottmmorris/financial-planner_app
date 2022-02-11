@@ -1,13 +1,12 @@
 {
   "name": "financial-planner",
   "version": "1.0.0",
-  "description": "A minimal application to help kepp financial transcactions",
+  "description": "A minimal application to help keep financial transcactions",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
-  "type": "module",
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
     "Electron",
