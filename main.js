@@ -22,7 +22,7 @@ function main () {
   })
 
   // create detailed segment window viewer
-  ipcMain.on('add-segment-window', (_, segment) => {
+  ipcMain.on('view-segment-window', (_, segment) => {
     // if segmentDetailWindow does not already exist
     if (!segmentDetailWindow) {
       // create a new segment detail window
@@ -40,6 +40,16 @@ function main () {
         segmentDetailWindow = null
       })
     }
+  })
+
+  ipcMain.on('add-segment', (_, segmentName) => {
+    financialPlanner.createNewMonthPlanner(segmentName)
+    mainWindow.webContents.send('listSegments', financialPlanner.monthPlanners)
+  })
+
+  ipcMain.on('delete-segment', (_, segmentName) => {
+    financialPlanner.deleteMonthPlanner(segmentName)
+    mainWindow.webContents.send('listSegments', financialPlanner.monthPlanners)
   })
 
 }
