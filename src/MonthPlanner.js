@@ -67,7 +67,7 @@ class MonthPlanner {
     }
 
     #writeMetadata() {
-        fs.promises.writeFileSync(this.metaPath, JSON.stringify(this.fields));
+        fs.writeFileSync(this.metaPath, JSON.stringify(this.fields));
     }
 }
 

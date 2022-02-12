@@ -1,8 +1,8 @@
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
 
-import MonthPlanner from '../src/MonthPlanner';
+const MonthPlanner = require('../src/MonthPlanner');
 
 describe('MonthPlanner Testing', () => {
     let dataDir;
