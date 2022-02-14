@@ -7,23 +7,21 @@ ipcRenderer.on('listSegments', (event, segments) => {
 
   let htmlSegmentList = ' '
   for (const key of segments.keys()) {
-    htmlSegmentList += `<li class="segment" id="${key}">${key}<button class="btn" id="${key}">Delete</button></li>`
+    htmlSegmentList += `<li class="segment" id="${key}">${key}</li><button class="btn" id="${key}">Delete</button>`
   }
 
   // set list html to the todo items
   segmentList.innerHTML = htmlSegmentList
 
-  // add click handlers to delete the clicked todo
+  // add click handlers to view the segment in more detail and delete the segment
   segmentList.querySelectorAll('.segment').forEach(segment => {
-    // program fails here because it registers clicking the delete button as also wanting to
-    // view the segment as well
-    segment.querySelectorAll(".btn").forEach(button => {
-      button.addEventListener('click', (e) => {
-        console.log(e.target.id)
-      })
-    })
     segment.addEventListener('click', (e) => {
-      ipcRenderer.send('view-segment-window', e.target.textContent)
+      ipcRenderer.send('view-segment-window', e.target.id)
+    })
+  })
+  segmentList.querySelectorAll(".btn").forEach(button => {
+    button.addEventListener('click', (e) => {
+      ipcRenderer.send('delete-segment', e.target.id)
     })
   })
 })
