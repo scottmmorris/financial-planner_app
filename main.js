@@ -32,7 +32,7 @@ function main () {
         parent: mainWindow
       })
       segmentDetailWindow.once('show', () => {
-        segmentDetailWindow.send('listEntries', financialPlanner.monthPlanners.get(segment).fields)
+        segmentDetailWindow.send('listEntries', financialPlanner.monthPlanners.get(segment).fields, segment)
       })
 
       // cleanup
@@ -50,6 +50,23 @@ function main () {
   ipcMain.on('delete-segment', (_, segmentName) => {
     financialPlanner.deleteMonthPlanner(segmentName)
     mainWindow.webContents.send('listSegments', financialPlanner.monthPlanners)
+  })
+
+  ipcMain.on('edit-field', (_, segmentName, entryId, newField, newContent) => {
+    financialPlanner.monthPlanners.get(segmentName).editEntry(entryId, newField, newContent)
+    segmentDetailWindow.send('listEntries', financialPlanner.monthPlanners.get(segmentName).fields, segmentName)
+  })
+
+  ipcMain.on('add-entry', (_, segmentName, field, content) => {
+    if (field == 'name') financialPlanner.monthPlanners.get(segmentName).addEntry(content, 0, '')
+    if (field == 'category') financialPlanner.monthPlanners.get(segmentName).addEntry('', 0, content)
+    if (field == 'value') financialPlanner.monthPlanners.get(segmentName).addEntry('', content, '')
+    segmentDetailWindow.send('listEntries', financialPlanner.monthPlanners.get(segmentName).fields, segmentName)
+  })
+
+  ipcMain.on('delete-entry', (_, segmentName, entryId) => {
+    financialPlanner.monthPlanners.get(segmentName).deleteEntry(entryId)
+    segmentDetailWindow.send('listEntries', financialPlanner.monthPlanners.get(segmentName).fields, segmentName)
   })
 
 }

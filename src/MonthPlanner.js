@@ -50,10 +50,14 @@ class MonthPlanner {
         return this.fields;
     }
 
-    deleteEntry(name) {
-        const id = this.#getId(name);
+    deleteEntry(id) {
         delete this.fields[id];
         this.#writeMetadata();
+    }
+
+    editEntry(name, field, content) {
+        this.fields[name][field] = content
+        this.#writeMetadata()
     }
 
     #getId(name) {

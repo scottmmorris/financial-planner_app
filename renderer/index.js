@@ -7,7 +7,7 @@ ipcRenderer.on('listSegments', (event, segments) => {
 
   let htmlSegmentList = ' '
   for (const key of segments.keys()) {
-    htmlSegmentList += `<li class="segment" id="${key}">${key}</li><button class="btn" id="${key}">Delete</button>`
+    htmlSegmentList += `<li class="segment" id="${key}">${key}</li>`
   }
 
   // set list html to the todo items
