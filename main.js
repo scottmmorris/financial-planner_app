@@ -5,7 +5,7 @@ const { app, ipcMain } = require('electron')
 const Window = require('./Window')
 const FinancialPlanner = require('./src/FinancialPlanner')
 
-const financialPlanner = new FinancialPlanner();
+const financialPlanner = new FinancialPlanner()
 
 function main () {
   // open the main window of the financial app
@@ -61,7 +61,7 @@ function main () {
 
   // handle a call to add a new entry with only single field info and then reload the entry list for that division
   ipcMain.on('add-entry', (_, divisionName, field, content) => {
-    let args;
+    let args
     if (field == 'name') {
       args = [content, '', 0.00]
     } else if (field == 'category') {

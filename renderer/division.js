@@ -15,16 +15,16 @@ ipcRenderer.on('list-entries', (_, entries, divisionName) => {
 
   for (const entry in entries) {
     document.getElementById(`${entry}NameEditor`).addEventListener("blur", (e) => {
-      ipcRenderer.send('edit-field', divisionName, entry, 'name', e.target.outerText);
+      ipcRenderer.send('edit-field', divisionName, entry, 'name', e.target.outerText)
     }, false)
     document.getElementById(`${entry}CategoryEditor`).addEventListener("blur", (e) => {
-      ipcRenderer.send('edit-field', divisionName, entry, 'category', e.target.outerText);
+      ipcRenderer.send('edit-field', divisionName, entry, 'category', e.target.outerText)
     }, false)
     document.getElementById(`${entry}ValueEditor`).addEventListener("blur", (e) => {
-      ipcRenderer.send('edit-field', divisionName, entry, 'value', e.target.outerText);
+      ipcRenderer.send('edit-field', divisionName, entry, 'value', e.target.outerText)
     }, false)
     document.getElementById(`${entry}DelButton`).addEventListener('click', (e) => {
-      ipcRenderer.send('delete-entry', divisionName, entry);
+      ipcRenderer.send('delete-entry', divisionName, entry)
     }, false)
   }
   document.getElementById(`newEntryName`).addEventListener("blur", (e) => {
