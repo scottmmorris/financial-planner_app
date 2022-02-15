@@ -2,37 +2,44 @@ const fs = require('fs');
 const path = require('path');
 
 const utils = require('./utils');
-const MonthPlanner = require('./MonthPlanner');
+const Division = require('./Division');
 
 class FinancialPlanner {
-    static startFinancialPlanner(statePath) {
-        if (statePath == undefined) statePath = utils.getDefaultAppPath();
-        let monthPlanners = new Map;
-        if (utils.mkdirExists(statePath)) {
-            for (const file of fs.readdirSync(statePath)) {
-                monthPlanners.set(file, MonthPlanner.createMonthPlanner(statePath, file));
+    constructor(statePath) {
+        // if the state path isnt specified, use the platform dependent default path
+        this.statePath = statePath
+        if (this.statePath == undefined) this.statePath = utils.getDefaultAppPath();
+
+        this.divisions = new Map;
+        // if existing data exists at the state path, load it in
+        if (utils.mkdirExists(this.statePath)) {
+            for (const file of fs.readdirSync(this.statePath)) {
+                this.divisions.set(file, new Division(this.statePath, file));
             }
         }
-        return new FinancialPlanner(statePath, monthPlanners);
     }
 
-    constructor(statePath, monthPlanners) {
-        this.monthPlanners = monthPlanners;
-        this.statePath = statePath;
-    }
-
-    createNewMonthPlanner(name) {
-        if (this.monthPlanners.has(name)) {
+    // creates a new division in the financial planner with the given name
+    createDivision(name) {
+        if (this.divisions.has(name)) {
             console.log('Name already exists')
             return false;
         }
-        this.monthPlanners.set(name, MonthPlanner.createMonthPlanner(this.statePath, name));
+        this.divisions.set(name, new Division(this.statePath, name));
         return true;
     }
 
-    deleteMonthPlanner(name) {
+    // deletes a division in the financial planner with the given name
+    deleteDivision(name) {
         fs.rmSync(path.join(this.statePath, name), { recursive: true, force: true });
-        this.monthPlanners.delete(name);
+        this.divisions.delete(name);
+    }
+
+    // assigns a new name to the specified division
+    renameDivision(oldName, newName) {
+        fs.renameSync(path.join(this.statePath, oldName), path.join(this.statePath, newName));
+        this.divisions.delete(oldName);
+        this.divisions.set(newName, new Division(this.statePath, newName));
     }
 }
 

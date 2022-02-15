@@ -7,7 +7,7 @@
     "start": "electron .",
     "test": "jest"
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/scottmmorris/financial-planner_app",
   "keywords": [
     "Electron",
     "financial",

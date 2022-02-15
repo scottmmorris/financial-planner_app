@@ -1,8 +1,7 @@
 const { ipcRenderer } = require('electron')
 
-// on receive entries
-ipcRenderer.on('listEntries', (_, entries, segmentName) => {
-  // get the todoList ul
+// on receiving a request to list entries
+ipcRenderer.on('list-entries', (_, entries, divisionName) => {
   const entryTable = document.getElementById('entryTable')
 
   let htmlEntryTable = '<tbody><tr><th>Name</th><th>Category</th><th>Value</th></tr></tbody>'
@@ -16,25 +15,25 @@ ipcRenderer.on('listEntries', (_, entries, segmentName) => {
 
   for (const entry in entries) {
     document.getElementById(`${entry}NameEditor`).addEventListener("blur", (e) => {
-      ipcRenderer.send('edit-field', segmentName, entry, 'name', e.target.outerText);
+      ipcRenderer.send('edit-field', divisionName, entry, 'name', e.target.outerText);
     }, false)
     document.getElementById(`${entry}CategoryEditor`).addEventListener("blur", (e) => {
-      ipcRenderer.send('edit-field', segmentName, entry, 'category', e.target.outerText);
+      ipcRenderer.send('edit-field', divisionName, entry, 'category', e.target.outerText);
     }, false)
     document.getElementById(`${entry}ValueEditor`).addEventListener("blur", (e) => {
-      ipcRenderer.send('edit-field', segmentName, entry, 'value', e.target.outerText);
+      ipcRenderer.send('edit-field', divisionName, entry, 'value', e.target.outerText);
     }, false)
     document.getElementById(`${entry}DelButton`).addEventListener('click', (e) => {
-      ipcRenderer.send('delete-entry', segmentName, entry);
+      ipcRenderer.send('delete-entry', divisionName, entry);
     }, false)
   }
   document.getElementById(`newEntryName`).addEventListener("blur", (e) => {
-    ipcRenderer.send('add-entry', segmentName, 'name', e.target.outerText)
+    ipcRenderer.send('add-entry', divisionName, 'name', e.target.outerText)
   }, false)
   document.getElementById(`newEntryCategory`).addEventListener("blur", (e) => {
-    ipcRenderer.send('add-entry', segmentName, 'category', e.target.outerText)
+    ipcRenderer.send('add-entry', divisionName, 'category', e.target.outerText)
   }, false)
   document.getElementById(`newEntryValue`).addEventListener("blur", (e) => {
-    ipcRenderer.send('add-entry', segmentName, 'value', e.target.outerText)
+    ipcRenderer.send('add-entry', divisionName, 'value', e.target.outerText)
   }, false)
 })

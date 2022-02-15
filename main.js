@@ -5,70 +5,79 @@ const { app, ipcMain } = require('electron')
 const Window = require('./Window')
 const FinancialPlanner = require('./src/FinancialPlanner')
 
-const financialPlanner = FinancialPlanner.startFinancialPlanner();
+const financialPlanner = new FinancialPlanner();
 
 function main () {
-  // segment list window
-  let mainWindow = new Window({
+  // open the main window of the financial app
+  let financialPlannerWindow = new Window({
     file: path.join('renderer', 'index.html')
   })
 
-  // detailed segment window
-  let segmentDetailWindow
-
-  // initialize with todos
-  mainWindow.once('show', () => {
-    mainWindow.webContents.send('listSegments', financialPlanner.monthPlanners)
+  // load the divisions onto the main window
+  financialPlannerWindow.once('show', () => {
+    financialPlannerWindow.send('list-divisions', financialPlanner.divisions)
   })
 
-  // create detailed segment window viewer
-  ipcMain.on('view-segment-window', (_, segment) => {
-    // if segmentDetailWindow does not already exist
-    if (!segmentDetailWindow) {
-      // create a new segment detail window
-      segmentDetailWindow = new Window({
-        file: path.join('renderer', 'segment.html'),
-        // close with the main window
-        parent: mainWindow
-      })
-      segmentDetailWindow.once('show', () => {
-        segmentDetailWindow.send('listEntries', financialPlanner.monthPlanners.get(segment).fields, segment)
+  // create a window to view the dentries of a division
+  let divisionWindow
+  ipcMain.on('view-division', (_, divisionName) => {
+    // do not open another division window if one already exists
+    if (!divisionWindow) {
+      divisionWindow = new Window({
+        file: path.join('renderer', 'division.html'),
+        // close with the financial planner window
+        parent: financialPlannerWindow
       })
 
-      // cleanup
-      segmentDetailWindow.on('closed', () => {
-        segmentDetailWindow = null
+      // show all the entries in the division once the window is ready
+      divisionWindow.once('show', () => {
+        divisionWindow.send('list-entries', financialPlanner.divisions.get(divisionName).entries, divisionName)
+      })
+
+      // cleanup the division window
+      divisionWindow.on('closed', () => {
+        divisionWindow = null
       })
     }
   })
 
-  ipcMain.on('add-segment', (_, segmentName) => {
-    financialPlanner.createNewMonthPlanner(segmentName)
-    mainWindow.webContents.send('listSegments', financialPlanner.monthPlanners)
+  // handle a call to create a new division and reload the division list
+  ipcMain.on('add-division', (_, divisionName) => {
+    financialPlanner.createDivision(divisionName)
+    financialPlannerWindow.send('list-divisions', financialPlanner.divisions)
   })
 
-  ipcMain.on('delete-segment', (_, segmentName) => {
-    financialPlanner.deleteMonthPlanner(segmentName)
-    mainWindow.webContents.send('listSegments', financialPlanner.monthPlanners)
+  // handle a call to delete a division and reload the division list
+  ipcMain.on('delete-division', (_, divisionName) => {
+    financialPlanner.deleteDivision(divisionName)
+    financialPlannerWindow.send('list-divisions', financialPlanner.divisions)
   })
 
-  ipcMain.on('edit-field', (_, segmentName, entryId, newField, newContent) => {
-    financialPlanner.monthPlanners.get(segmentName).editEntry(entryId, newField, newContent)
-    segmentDetailWindow.send('listEntries', financialPlanner.monthPlanners.get(segmentName).fields, segmentName)
+  // handle a call to edit the field of an entry within a dicision and reload the entry list for that division
+  ipcMain.on('edit-entry', (_, divisionName, entryId, field, newContent) => {
+    financialPlanner.divisions.get(divisionName).editEntry(entryId, field, newContent)
+    divisionWindow.send('list-entries', financialPlanner.divisions.get(divisionName).entries, divisionName)
   })
 
-  ipcMain.on('add-entry', (_, segmentName, field, content) => {
-    if (field == 'name') financialPlanner.monthPlanners.get(segmentName).addEntry(content, 0, '')
-    if (field == 'category') financialPlanner.monthPlanners.get(segmentName).addEntry('', 0, content)
-    if (field == 'value') financialPlanner.monthPlanners.get(segmentName).addEntry('', content, '')
-    segmentDetailWindow.send('listEntries', financialPlanner.monthPlanners.get(segmentName).fields, segmentName)
+  // handle a call to add a new entry with only single field info and then reload the entry list for that division
+  ipcMain.on('add-entry', (_, divisionName, field, content) => {
+    let args;
+    if (field == 'name') {
+      args = [content, '', 0.00]
+    } else if (field == 'category') {
+      args = ['', content, 0.00]
+    } else if (field == 'value') {
+      args = ['', '', content]
+    }
+    financialPlanner.divisions.get(divisionName).addEntry(...args)
+    divisionWindow.send('list-entries', financialPlanner.divisions.get(divisionName).entries, divisionName)
   })
 
-  ipcMain.on('delete-entry', (_, segmentName, entryId) => {
-    financialPlanner.monthPlanners.get(segmentName).deleteEntry(entryId)
-    segmentDetailWindow.send('listEntries', financialPlanner.monthPlanners.get(segmentName).fields, segmentName)
+  // handle a call to delete an entry for the entry list of the division
+  ipcMain.on('delete-entry', (_, divisionName, entryId) => {
+    financialPlanner.divisions.get(divisionName).deleteEntry(entryId)
+    divisionWindow.send('list-entries', financialPlanner.divisions.get(divisionName).entries, divisionName)
   })
-
 }
 
 app.on('ready', main)

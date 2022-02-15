@@ -21,14 +21,14 @@ describe('FinancialPlanner Testing', () => {
         await fs.promises.mkdir(path.join(dataDir, 'jan'));
         await fs.promises.mkdir(path.join(dataDir, 'feb'));
         await fs.promises.mkdir(path.join(dataDir, 'mar'));
-        const fp = await FinancialPlanner.startFinancialPlanner(dataDir);
+        const fp = new FinancialPlanner(dataDir);
     });
 
     test('constructing and removing a new planner month', async () => {
-        const fp = await FinancialPlanner.startFinancialPlanner(dataDir);
-        await fp.createNewMonthPlanner('January');
+        const fp = new FinancialPlanner(dataDir);
+        fp.createDivision('January');
         await expect(fs.promises.readdir(dataDir)).resolves.toEqual(['January']);
-        await fp.deleteMonthPlanner('January');
+        fp.deleteDivision('January');
         await expect(fs.promises.readdir(dataDir)).resolves.toEqual([]);
     });
 });

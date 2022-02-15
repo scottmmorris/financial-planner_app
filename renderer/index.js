@@ -1,41 +1,40 @@
 const { ipcRenderer } = require('electron')
 
-// on receive todos
-ipcRenderer.on('listSegments', (event, segments) => {
-  // get the todoList ul
-  const segmentList = document.getElementById('segmentList')
+// on receiving a request to list the divisions
+ipcRenderer.on('list-divisions', (_, divisions) => {
+  const divisionList = document.getElementById('divisionList')
 
-  let htmlSegmentList = ' '
-  for (const key of segments.keys()) {
-    htmlSegmentList += `<li class="segment" id="${key}">${key}</li>`
+  // for each division we receive and it to the list along with a delete button and set this as the html list
+  let htmlDivisionList = ' '
+  for (const division of divisions.keys()) {
+    htmlDivisionList += `<li class="division" id="${division}">${division}</li><button class="btn" id="${division}">Delete</button>`
   }
+  divisionList.innerHTML = htmlDivisionList
 
-  // set list html to the todo items
-  segmentList.innerHTML = htmlSegmentList
-
-  // add click handlers to view the segment in more detail and delete the segment
-  segmentList.querySelectorAll('.segment').forEach(segment => {
-    segment.addEventListener('click', (e) => {
-      ipcRenderer.send('view-segment-window', e.target.id)
+  // add a click handler for each division which will launch the division window
+  divisionList.querySelectorAll('.division').forEach(division => {
+    division.addEventListener('click', (e) => {
+      ipcRenderer.send('view-division', e.target.id)
     })
   })
-  segmentList.querySelectorAll(".btn").forEach(button => {
+
+  // add a click handler for the delete button of each division which will delete the division
+  divisionList.querySelectorAll(".btn").forEach(button => {
     button.addEventListener('click', (e) => {
-      ipcRenderer.send('delete-segment', e.target.id)
+      ipcRenderer.send('delete-division', e.target.id)
     })
   })
 })
 
-document.getElementById('segmentForm').addEventListener('submit', (evt) => {
+// add a listener for adding a new division through the form 
+document.getElementById('divisionForm').addEventListener('submit', (event) => {
   // prevent default refresh functionality of forms
-  evt.preventDefault()
+  event.preventDefault()
 
-  // input on the form
-  const input = evt.target[0]
+  // send the division name to be added
+  const divisionName = event.target[0].value
+  ipcRenderer.send('add-division', divisionName)
 
-  // send segment name to main process
-  ipcRenderer.send('add-segment', input.value)
-
-  // reset input
-  input.value = ''
+  // reset the form
+  event.target[0].value = ''
 })
