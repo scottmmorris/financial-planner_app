@@ -4,8 +4,8 @@ const { BrowserWindow } = require('electron')
 
 // default window settings
 const defaultProps = {
-  width: 1000,
-  height: 800,
+  width: 800,
+  height: 500,
   show: false,
   autoHideMenuBar: true,
   
