@@ -53,6 +53,12 @@ function main () {
     financialPlannerWindow.send('list-divisions', financialPlanner.divisions)
   })
 
+  // handle a call to rename a division
+  ipcMain.on('rename-division', (_, oldDivisionName, newDivisionName) => {
+    financialPlanner.renameDivision(oldDivisionName, newDivisionName)
+    financialPlannerWindow.send('list-divisions', financialPlanner.divisions)
+  })
+
   // handle a call to edit the field of an entry within a dicision and reload the entry list for that division
   ipcMain.on('edit-entry', (_, divisionName, entryId, field, newContent) => {
     financialPlanner.divisions.get(divisionName).editEntry(entryId, field, newContent)

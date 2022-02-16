@@ -1,3 +1,16 @@
 /* styles.css */
 
-/* Add styles here to customize the appearance of your app */
+/* body {
+    background-color: powderblue;
+} */
+h1 {
+    display: flex;
+	height: 75px;
+    line-height: 75px;
+    background-color: #28D29F;
+    justify-content: center;
+    width: 100%;
+    color: white;
+    font-family: Arial;
+
+}
