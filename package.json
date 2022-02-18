@@ -7,7 +7,7 @@
   "scripts": {
     "start": "electron .",
     "test": "jest",
-    "release": "electron-builder"
+    "build": "electron-builder --publish=never"
   },
   "repository": "https://github.com/scottmmorris/financial-planner_app",
   "keywords": [
@@ -31,6 +31,9 @@
           "path": "/Applications"
         }
       ]
+    },
+    "win": {
+      "icon": "assets/icon.png"
     },
     "nsis": {
       "createDesktopShortcut": "always"
