@@ -10,7 +10,8 @@ const financialPlanner = new FinancialPlanner()
 function main () {
   // open the main window of the financial app
   let financialPlannerWindow = new Window({
-    file: path.join('renderer', 'index.html')
+    icon: __dirname + path.join('/assets', 'icon.png'),
+    file: __dirname + path.join('/renderer', 'index.html')
   })
 
   // load the divisions onto the main window

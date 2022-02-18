@@ -1,11 +1,13 @@
 {
   "name": "financial-planner",
+  "productName": "FinancialPlanner",
   "version": "1.0.0",
   "description": "A minimal application to help keep financial transcactions",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "test": "jest"
+    "test": "jest",
+    "release": "electron-builder"
   },
   "repository": "https://github.com/scottmmorris/financial-planner_app",
   "keywords": [
@@ -14,8 +16,29 @@
     "planner"
   ],
   "author": "Scott Morris",
+  "build": {
+    "appId": "financial-planner",
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "nsis": {
+      "createDesktopShortcut": "always"
+    }
+  },
   "devDependencies": {
     "electron": "^17.0.0",
-    "jest": "^27.5.0"
+    "jest": "^27.5.0",
+    "electron-builder": "^22.14.13"
   }
 }
