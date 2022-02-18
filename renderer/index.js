@@ -9,7 +9,7 @@ ipcRenderer.on('list-divisions', (_, divisions) => {
   for (const division of divisions.keys()) {
     htmlDivisionList += 
       `<li id="${division}">
-        <div class="division" contenteditable="true" id="${division}Rename">${division}</div>
+        <div class="divisionName" contenteditable="true" id="${division}Rename">${division}</div>
         <div class="division">
           <button class="view" id="${division}View">View</button>
         </div>

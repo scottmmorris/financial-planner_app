@@ -13,7 +13,13 @@ class FinancialPlanner {
         this.divisions = new Map;
         // if existing data exists at the state path, load it in
         if (utils.mkdirExists(this.statePath)) {
-            for (const file of fs.readdirSync(this.statePath)) {
+            var files = fs.readdirSync(this.statePath);
+            var dir = this.statePath
+            files.sort(function(a, b) {
+               return fs.statSync(path.join(dir, a)).birthtime.getTime()
+                    - fs.statSync(path.join(dir, b)).birthtime.getTime();
+           });
+            for (const file of files) {
                 this.divisions.set(file, new Division(this.statePath, file))
             }
         }

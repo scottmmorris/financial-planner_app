@@ -11,7 +11,7 @@ ipcRenderer.on('list-entries', (_, entries, divisionName) => {
   const entryTable = document.getElementById('entryTable')
   let htmlEntryTable = ' '
   for (const entry in entries) {
-    const color = (entries[entry].value < 0) ? 'red' : 'green'
+    const color = (entries[entry].value < 0) ? '#FF3333' : '#28D29'
     console.log(color, entries[entry].value)
     htmlEntryTable += 
     `<tr>

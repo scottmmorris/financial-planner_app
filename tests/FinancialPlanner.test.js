@@ -3,6 +3,7 @@ const os = require('os')
 const path = require('path')
 
 const FinancialPlanner = require('../src/FinancialPlanner')
+const utils = require('../src/utils')
 
 describe('FinancialPlanner Testing', () => {
     let dataDir
@@ -48,5 +49,17 @@ describe('FinancialPlanner Testing', () => {
         await expect(fs.promises.readdir(dataDir)).resolves.toEqual(['February'])
         expect(fp.divisions.get('January')).toBeUndefined()
         expect(fp.divisions.get('February')).not.toBeUndefined()
+    })
+
+    test.skip('divisions are ordered on when they were created even when reloaded', async () => {
+        await fs.promises.mkdir(path.join(dataDir, 'jan'))
+        utils.sleep(1000)
+        await fs.promises.mkdir(path.join(dataDir, 'feb'))
+        utils.sleep(1000)
+        await fs.promises.mkdir(path.join(dataDir, 'mar'))
+        const fp = new FinancialPlanner(dataDir)
+        expect(Array.from(fp.divisions.keys())[0]).toBe('jan')
+        expect(Array.from(fp.divisions.keys())[1]).toBe('feb')
+        expect(Array.from(fp.divisions.keys())[2]).toBe('mar')
     })
 })

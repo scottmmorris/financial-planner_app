@@ -6,9 +6,9 @@ h1 {
     line-height: 75px;
     background-color: #28D29F;
     justify-content: center;
-    width: 100%;
     color: white;
     font-family: Arial;
+    white-space: nowrap;
 }
 
 ul {
@@ -36,6 +36,12 @@ li {
     padding-right: 20px;
 }
 
+.divisionName {
+    float: left;
+    width: 200px;
+    padding-right: 20px;
+}
+
 .view {
     background-color: white;
     color: #28D29F;
@@ -48,7 +54,7 @@ li {
 }
 
 .delete {
-    background-color: #FF3333; /* Green */
+    background-color: #FF3333;
     color: white;
     text-align: center;
     font-family: Arial;
@@ -80,8 +86,10 @@ table {
     border-spacing: 20px 15px;
 }
 .entry {
-    margin: 10px;
-    padding: 10px;
+    margin: 25px;
+    padding: 10px 25px;
+    width: 150px;
+    height: 25px;
     background-color: #28D29F;
     border-radius: 10px;
     color: white;
@@ -90,8 +98,10 @@ table {
 }
 
 .add-entry {
-    margin: 10px;
-    padding: 10px;
+    margin: 25px;
+    padding: 10px 25px;
+    width: 150px;
+    height: 25px;
     background-color: white;
     border-radius: 10px;
     color: black;
