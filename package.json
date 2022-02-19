@@ -7,7 +7,8 @@
   "scripts": {
     "start": "electron .",
     "test": "jest",
-    "build": "electron-builder --publish=never"
+    "build": "electron-builder --publish=never",
+    "release": "electron-builder"
   },
   "repository": "https://github.com/scottmmorris/financial-planner_app",
   "keywords": [
